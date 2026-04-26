@@ -1,1 +1,672 @@
-{"type":"error","error":{"type":"not_found_error","message":"File not found in container: /mnt/user-data/outputs/工事数量計算機で2.html","details":{"error_visibility":"user_facing"}},"request_id":"req_011CaSfTW4W88RLEBk3GErMA"}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工事 数量計算機 | 建設業向け無料ツール</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1c2b4a;--navy2:#243558;--navy3:#2d4168;
+  --gold:#c9a84c;--gold2:#e2c06a;
+  --bg:#f4f2ee;--bg2:#eceae5;--white:#ffffff;
+  --border:#dedad2;--border2:#ccc8be;
+  --text:#1e1c18;--text2:#6b6660;--text3:#9a9590;
+  --red:#b83232;
+  --r:6px;--r2:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--text);background:var(--bg);min-height:100vh}
+
+.hdr{background:var(--navy);color:#fff;padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.hdr-title{font-size:15px;font-weight:700;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+.hdr-badge{font-size:10px;font-weight:500;background:var(--gold);color:var(--navy);padding:2px 8px;border-radius:2px;letter-spacing:.06em}
+.hdr-free{font-size:11px;color:rgba(255,255,255,.5)}
+
+.layout{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 52px);max-width:1200px;margin:0 auto}
+.left{display:flex;flex-direction:column}
+
+.tab-bar{background:var(--navy2);display:flex;padding:0 1.5rem}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.5);padding:12px 18px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab-btn:hover{color:rgba(255,255,255,.8)}
+.tab-btn.on{color:#fff;border-bottom-color:var(--gold)}
+.tab-pane{display:none}.tab-pane.on{display:block}
+
+.panel{padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem}
+.sec{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.sec-hdr{background:var(--navy);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sec-title{font-size:13px;font-weight:700;letter-spacing:.04em}
+.sec-sub{font-size:11px;color:rgba(255,255,255,.5)}
+.sec-body{padding:14px}
+
+.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.type-btn{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 4px;text-align:center;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.type-btn:hover{border-color:var(--navy);background:var(--bg2)}
+.type-btn.on{background:var(--navy);border-color:var(--navy)}
+.type-icon{font-size:18px;line-height:1}
+.type-lbl{font-size:11px;font-weight:500;color:var(--text2);line-height:1.3;text-align:center}
+.type-btn.on .type-lbl{color:rgba(255,255,255,.8)}
+
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:11px;font-weight:500;color:var(--text2)}
+.field-hint{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+
+input[type=number],input[type=text],select,textarea{
+  width:100%;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;
+  color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);
+  padding:9px 10px;outline:none;transition:border-color .15s;-moz-appearance:textfield
+}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--navy);background:#fff;box-shadow:0 0 0 2px rgba(28,43,74,.08)}
+textarea{resize:vertical;min-height:60px;font-size:13px}
+
+.result-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:grid;gap:8px;margin-top:10px}
+.res-item{text-align:center}
+.res-lbl{font-size:10px;color:var(--text3);margin-bottom:3px;letter-spacing:.03em}
+.res-val{font-size:17px;font-weight:700;color:var(--navy)}
+.res-unit{font-size:11px;color:var(--text2);margin-top:1px}
+.res-cost{background:var(--navy);border-radius:var(--r);padding:10px;text-align:center;margin-top:4px;grid-column:1/-1}
+.res-cost-lbl{font-size:11px;color:rgba(255,255,255,.6);margin-bottom:3px}
+.res-cost-val{font-size:20px;font-weight:700;color:var(--gold2)}
+
+.btn{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;padding:10px 16px;border-radius:var(--r);border:1px solid transparent;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-gold{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{background:transparent;border-color:var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--bg2)}
+.btn-danger{background:transparent;border-color:#f5c6c2;color:var(--red);font-size:12px;padding:6px 12px}
+.btn-danger:hover{background:#fef2f2}
+.btn-block{width:100%}
+.btn-row{display:flex;gap:6px}
+
+.right{background:var(--white);border-left:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;gap:1rem}
+.right-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.03em}
+.item-list{display:flex;flex-direction:column;gap:6px}
+.item-row{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;display:flex;gap:8px;align-items:flex-start}
+.item-body{flex:1;min-width:0}
+.item-name{font-size:13px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px}
+.item-cat{font-size:10px;padding:1px 6px;border-radius:2px;font-weight:500;white-space:nowrap}
+.item-qty{font-size:11px;color:var(--text2)}
+.item-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.item-price{font-size:13px;font-weight:700;color:var(--navy)}
+.item-del{background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:11px;padding:2px 7px;cursor:pointer}
+.item-del:hover{border-color:var(--red);color:var(--red)}
+
+.total-box{background:var(--navy);border-radius:var(--r2);padding:14px}
+.total-title{font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);margin-bottom:10px}
+.total-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.total-row:last-child{border-bottom:none}
+.total-label{color:rgba(255,255,255,.65)}
+.total-val{font-weight:500;color:#fff}
+.total-grand{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.2)}
+.total-grand-lbl{font-size:12px;color:var(--gold2);font-weight:500}
+.total-grand-val{font-size:20px;font-weight:700;color:var(--gold2)}
+
+.empty{text-align:center;padding:2rem 1rem;color:var(--text3);font-size:13px;border:1.5px dashed var(--border);border-radius:var(--r);line-height:1.8}
+
+.cat-concrete{background:#dbeafe;color:#1e40af}
+.cat-formwork{background:#ede9fe;color:#4c1d95}
+.cat-rebar{background:#fce7f3;color:#831843}
+.cat-earth{background:#fef9c3;color:#713f12}
+.cat-painting{background:#dcfce7;color:#14532d}
+.cat-tile{background:#ffedd5;color:#7c2d12}
+.cat-waterproof{background:#f0f9ff;color:#0c4a6e}
+.cat-interior{background:#fdf4ff;color:#581c87}
+
+/* ── 使い方タブ ── */
+.guide{padding:1.5rem;display:flex;flex-direction:column;gap:1.5rem}
+.guide-intro{background:var(--navy);color:#fff;border-radius:var(--r2);padding:16px 18px;font-size:13px;line-height:1.8}
+.guide-intro strong{color:var(--gold2)}
+.g-step{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:10px}
+.g-step-hdr{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border-bottom:1px solid var(--border)}
+.g-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-step-title{font-size:13px;font-weight:700;color:var(--text)}
+.g-step-body{padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.85}
+.g-step-body ul{padding-left:1.4em;margin-top:6px}
+.g-step-body li{margin-bottom:4px}
+.g-step-body strong{color:var(--text);font-weight:700}
+.g-type-item{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;display:flex;gap:12px;margin-bottom:6px}
+.g-type-icon{font-size:20px;flex-shrink:0;width:26px;text-align:center}
+.g-type-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.g-type-desc{font-size:12px;color:var(--text2);line-height:1.55}
+.g-note{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r);padding:12px 14px;font-size:12px;color:#78350f;line-height:1.7}
+.g-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* ── 設定タブ ── */
+.settings{padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem}
+.settings-sec{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.settings-hdr{background:var(--navy);color:#fff;padding:10px 14px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.settings-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.settings-note{font-size:12px;color:var(--text3);line-height:1.6}
+
+/* ── 印刷 ── */
+@media print{
+  .hdr,.left,.btn-row,.item-del,.print-hide{display:none!important}
+  .layout{display:block}
+  .right{border:none;padding:0}
+  .total-box{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-company{display:block!important}
+  body{background:#fff}
+}
+.print-company{display:none;font-size:11px;color:var(--text3);margin-bottom:8px;line-height:1.6}
+
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr}
+  .right{border-left:none;border-top:1px solid var(--border)}
+  .hdr-free{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-title">
+    工事 数量計算機
+    <span class="hdr-badge">完全無料</span>
+  </div>
+  <div class="hdr-free">API不要 · データはブラウザ内にのみ保存</div>
+</header>
+
+<div class="layout">
+  <div class="left">
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="switchTab('calc')">計算</button>
+      <button class="tab-btn" onclick="switchTab('guide')">使い方</button>
+      <button class="tab-btn" onclick="switchTab('settings')">設定</button>
+    </div>
+
+    <!-- ══ 計算タブ ══ -->
+    <div class="tab-pane on" id="pane-calc">
+    <div class="panel">
+
+      <div class="sec">
+        <div class="sec-hdr">
+          <span class="sec-title">① 工種を選ぶ</span>
+          <span class="sec-sub">8工種に対応</span>
+        </div>
+        <div class="sec-body">
+          <div class="type-grid" id="typeGrid"></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-hdr">
+          <span class="sec-title" id="inputTitle">② 寸法を入力する</span>
+          <span class="sec-sub" id="inputHint"></span>
+        </div>
+        <div class="sec-body">
+          <div id="inputForm"></div>
+          <div id="resultBox" style="display:none"></div>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:flex-end">
+            <div class="field" style="flex:1">
+              <label>項目名（任意）</label>
+              <input type="text" id="itemName" placeholder="例：1F スラブ">
+              <span class="field-hint">空欄のまま追加すると工種名が自動でつきます</span>
+            </div>
+            <button class="btn btn-primary" onclick="addItem()" style="flex-shrink:0;margin-bottom:18px">③ 追加</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+
+    <!-- ══ 使い方タブ ══ -->
+    <div class="tab-pane" id="pane-guide">
+    <div class="guide">
+
+      <div class="guide-intro">
+        <strong>工事の数量（体積・面積・重量）と概算費用を自動計算するツールです。</strong><br>
+        インターネットがなくても使えます。入力したデータはこのブラウザにのみ保存され、外部には一切送信されません。
+      </div>
+
+      <div>
+        <div class="g-section-title">基本の使い方（3ステップ）</div>
+        <div class="g-step">
+          <div class="g-step-hdr"><div class="g-num">1</div><div class="g-step-title">「計算」タブで工種（工事の種類）を選ぶ</div></div>
+          <div class="g-step-body">
+            画面上部に並んでいる<strong>8つのボタン</strong>から、計算したい工事の種類をクリックします。<br>
+            例えばコンクリートを打つ工事なら「コンクリート」、床や壁を塗るなら「塗装」を選びます。
+          </div>
+        </div>
+        <div class="g-step">
+          <div class="g-step-hdr"><div class="g-num">2</div><div class="g-step-title">長さ・幅・高さなどの寸法を入力する</div></div>
+          <div class="g-step-body">
+            選んだ工種に合った入力欄が表示されます。<strong>すべてメートル（m）単位</strong>で入力してください。<br>
+            数字を入力すると、自動的に数量と概算金額がリアルタイムで表示されます。
+            <ul>
+              <li><strong>長さ（L）</strong>：横の長さ</li>
+              <li><strong>幅（W）</strong>：奥行きの長さ</li>
+              <li><strong>厚さ・深さ（D）</strong>：板の厚みや掘削の深さ</li>
+              <li><strong>高さ（H）</strong>：壁や柱などの縦の長さ</li>
+            </ul>
+          </div>
+        </div>
+        <div class="g-step">
+          <div class="g-step-hdr"><div class="g-num">3</div><div class="g-step-title">「③ 追加」ボタンで右側の内訳に積み上げる</div></div>
+          <div class="g-step-body">
+            「③ 追加」ボタンを押すと右側の「見積り内訳」に加わります。<br>
+            1つの工事には複数の工種があるので、<strong>工種を変えながら繰り返し追加</strong>していきます。<br>
+            すべて追加し終わると、<strong>工種ごとの金額と合計（税込）</strong>が自動で表示されます。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="g-section-title">計算結果の保存・出力方法</div>
+        <div class="g-step">
+          <div class="g-step-hdr"><div class="g-num" style="background:var(--gold);color:var(--navy)">A</div><div class="g-step-title">「PDF 印刷」→ 印刷またはPDFファイルに保存</div></div>
+          <div class="g-step-body">
+            右パネルの「PDF 印刷」ボタンを押すとブラウザの印刷画面が開きます。<br>
+            プリンターで印刷するか、「PDFとして保存」を選ぶとPDFに保存できます。<br>
+            <strong>印刷されるのは右側の内訳だけです</strong>（左の入力フォームは印刷されません）。<br>
+            ※ 印刷前に「設定」タブで会社名を入力しておくと、印刷物に会社名が入ります。
+          </div>
+        </div>
+        <div class="g-step">
+          <div class="g-step-hdr"><div class="g-num" style="background:var(--text2);color:#fff">B</div><div class="g-step-title">「テキストでコピー」→ LINEやメールに貼り付け</div></div>
+          <div class="g-step-body">
+            「テキストでコピー」ボタンを押すと内訳がテキストとしてコピーされます。<br>
+            そのままLINE・メール・Excel・Wordなどに貼り付けて使えます。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="g-section-title">各工種で計算できること</div>
+        <div class="g-type-item"><div class="g-type-icon">🪨</div><div><div class="g-type-name">コンクリート</div><div class="g-type-desc">長さ×幅×厚さでコンクリートの体積（m³）を計算します。「ロス率」とは打設時のこぼれや余分のことで、通常5%程度です。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">🪵</div><div><div class="g-type-name">型枠</div><div class="g-type-desc">コンクリートを流し込む際に使う型枠の面積（m²）を計算します。壁の両面に型枠を当てる場合は「両面×2」を選びます。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">⚙️</div><div><div class="g-type-name">鉄筋</div><div class="g-type-desc">鉄筋の間隔（ピッチ）と径から必要な重量（トン）を計算します。径はD10〜D32の規格品から選んでください。D13が最も一般的です。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">🏗️</div><div><div class="g-type-name">土工事</div><div class="g-type-desc">掘削量を「地山体積」（掘る前の土の量）と「ほぐし体積」（掘った後に膨らんだ土の量）で計算します。ほぐし率は一般的に15〜25%です。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">🎨</div><div><div class="g-type-name">塗装</div><div class="g-type-desc">壁・天井などの塗装面積を計算します。窓やドアの「開口控除」（引き算）ができます。塗り回数（1〜3回）も設定できます。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">🟫</div><div><div class="g-type-name">タイル</div><div class="g-type-desc">タイルの貼付面積を計算します。「ロス率」はカット時の廃材のことで、通常7〜10%程度に設定します。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">💧</div><div><div class="g-type-name">防水</div><div class="g-type-desc">屋上・浴室などの防水面積を計算します。「立上り」とは壁の根本部分の防水のことで、別途面積を加算できます。</div></div></div>
+        <div class="g-type-item"><div class="g-type-icon">🏠</div><div><div class="g-type-name">内装</div><div class="g-type-desc">床・天井・壁の施工面積を計算します。「壁」を選ぶと部屋の周長（縦＋横）×2×高さで自動計算します。</div></div></div>
+      </div>
+
+      <div class="g-note">
+        <strong>ご注意</strong><br>
+        計算結果はあくまで概算です。実際の工事では現場の状況・仕様によって数量や金額が変わります。単価は「設定」タブで地域・仕様に合わせて変更してください。<br>
+        データはこのブラウザにのみ保存されます。ブラウザのキャッシュを削除すると消えることがあるため、大切なデータはPDFまたはテキストコピーでバックアップすることをおすすめします。
+      </div>
+
+    </div>
+    </div>
+
+    <!-- ══ 設定タブ ══ -->
+    <div class="tab-pane" id="pane-settings">
+    <div class="settings">
+
+      <div class="settings-sec">
+        <div class="settings-hdr">会社・事業者情報（PDF印刷時に表示）</div>
+        <div class="settings-body">
+          <div class="form-2col">
+            <div class="field" style="grid-column:1/-1">
+              <label>会社名・屋号</label>
+              <input type="text" id="s-company" placeholder="株式会社○○建設" oninput="saveSetting('company',this.value)">
+            </div>
+            <div class="field">
+              <label>担当者名</label>
+              <input type="text" id="s-person" placeholder="山田 太郎" oninput="saveSetting('person',this.value)">
+            </div>
+            <div class="field">
+              <label>電話番号</label>
+              <input type="text" id="s-tel" placeholder="098-000-0000" oninput="saveSetting('tel',this.value)">
+            </div>
+          </div>
+          <p class="settings-note">入力した情報はこのブラウザにのみ保存されます。PDF印刷時に内訳の上部に表示されます。</p>
+        </div>
+      </div>
+
+      <div class="settings-sec">
+        <div class="settings-hdr">消費税率</div>
+        <div class="settings-body">
+          <div class="field" style="max-width:200px">
+            <label>消費税率</label>
+            <select id="s-tax">
+              <option value="10">10%（標準税率）</option>
+              <option value="8">8%（軽減税率）</option>
+              <option value="0">0%（非課税）</option>
+            </select>
+          </div>
+          <p class="settings-note">変更すると右側の合計金額にすぐ反映されます。</p>
+        </div>
+      </div>
+
+      <div class="settings-sec">
+        <div class="settings-hdr">工種別 単価設定（円）</div>
+        <div class="settings-body">
+          <p class="settings-note" style="margin-bottom:10px">初期値は全国平均的な単価です。地域・仕様・発注先に合わせて変更してください。変更すると自動保存されます。</p>
+          <div class="price-grid" id="priceForm"></div>
+          <div style="margin-top:12px">
+            <button class="btn btn-ghost" onclick="resetPrices()">単価を初期値に戻す</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-sec">
+        <div class="settings-hdr">データ管理</div>
+        <div class="settings-body">
+          <div>
+            <button class="btn btn-ghost" onclick="exportData()">内訳データをJSONで書き出す</button>
+            <p class="settings-note" style="margin-top:4px">内訳データをJSONファイルとして保存できます。バックアップや引継ぎに使えます。</p>
+          </div>
+          <div style="margin-top:4px">
+            <button class="btn btn-danger" onclick="deleteAll()">すべてのデータを削除する</button>
+            <p class="settings-note" style="margin-top:4px;color:#b83232">保存されている内訳・単価・会社情報をすべて削除します。この操作は取り消せません。</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT ══ -->
+  <div class="right">
+    <div class="print-company" id="printCompany"></div>
+    <div class="right-title">見積り内訳</div>
+    <div id="itemList"></div>
+    <div class="total-box">
+      <div class="total-title">合　計</div>
+      <div id="totalRows"></div>
+    </div>
+    <div class="btn-row print-hide">
+      <button class="btn btn-ghost" style="flex:1" onclick="clearAll()">クリア</button>
+      <button class="btn btn-gold" style="flex:1" onclick="window.print()">PDF 印刷</button>
+    </div>
+    <button class="btn btn-ghost btn-block print-hide" style="font-size:12px" onclick="copyText()">テキストでコピー</button>
+  </div>
+</div>
+
+<script>
+const TYPES = [
+  { id:'concrete', label:'コンクリート', icon:'🪨', cat:'cat-concrete', unit:'m³',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 10.0'},
+      {id:'wid',label:'幅（W）',unit:'m',ph:'例: 6.0'},
+      {id:'dep',label:'厚さ（D）',unit:'m',ph:'例: 0.2'},
+      {id:'waste',label:'ロス率',unit:'%',ph:'例: 5（通常5%）'},
+    ],
+    calc(f){ return [{label:'体積',val:f.len*f.wid*f.dep*(1+f.waste/100),unit:'m³'}] },
+    priceCalc(r,p){ return Math.round(r[0].val*p.concrete) },
+  },
+  { id:'formwork', label:'型枠', icon:'🪵', cat:'cat-formwork', unit:'m²',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 10.0'},
+      {id:'ht',label:'高さ（H）',unit:'m',ph:'例: 3.0'},
+      {id:'sides',label:'面数',unit:'',def:'2',type:'select',options:[{v:'2',l:'両面 ×2'},{v:'1',l:'片面 ×1'}]},
+    ],
+    calc(f){ return [{label:'面積',val:f.len*f.ht*Number(f.sides),unit:'m²'}] },
+    priceCalc(r,p){ return Math.round(r[0].val*p.formwork) },
+  },
+  { id:'rebar', label:'鉄筋', icon:'⚙️', cat:'cat-rebar', unit:'t',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 10.0'},
+      {id:'wid',label:'幅（W）',unit:'m',ph:'例: 6.0'},
+      {id:'pitch',label:'ピッチ（間隔）',unit:'mm',ph:'例: 200'},
+      {id:'dia',label:'鉄筋の径',unit:'',def:'D13',type:'select',
+        options:[{v:'D10',l:'D10'},{v:'D13',l:'D13（最も一般的）'},{v:'D16',l:'D16'},{v:'D19',l:'D19'},{v:'D22',l:'D22'},{v:'D25',l:'D25'},{v:'D29',l:'D29'},{v:'D32',l:'D32'}]},
+    ],
+    calc(f){
+      const W={D10:0.617,D13:1.021,D16:1.578,D19:2.226,D22:2.984,D25:3.853,D29:5.185,D32:6.313}
+      const uw=W[f.dia]||1.021, pm=f.pitch/1000
+      const totalLen=(Math.ceil(f.wid/pm)+1)*f.len+(Math.ceil(f.len/pm)+1)*f.wid
+      return [{label:'重量',val:totalLen*uw*1.05/1000,unit:'t'},{label:'概算本数',val:Math.ceil(f.wid/pm)+Math.ceil(f.len/pm)+2,unit:'本'}]
+    },
+    priceCalc(r,p){ return Math.round(r[0].val*p.rebar) },
+  },
+  { id:'earth', label:'土工事', icon:'🏗️', cat:'cat-earth', unit:'m³',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 10.0'},
+      {id:'wid',label:'幅（W）',unit:'m',ph:'例: 5.0'},
+      {id:'dep',label:'深さ（D）',unit:'m',ph:'例: 1.5'},
+      {id:'swell',label:'ほぐし率',unit:'%',ph:'例: 20（通常15〜25%）'},
+    ],
+    calc(f){
+      const nat=f.len*f.wid*f.dep
+      return [{label:'地山体積',val:nat,unit:'m³'},{label:'ほぐし体積',val:nat*(1+f.swell/100),unit:'m³'}]
+    },
+    priceCalc(r,p){ return Math.round(r[1].val*p.earth) },
+  },
+  { id:'painting', label:'塗装', icon:'🎨', cat:'cat-painting', unit:'m²',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 10.0'},
+      {id:'ht',label:'高さ（H）',unit:'m',ph:'例: 3.0'},
+      {id:'openings',label:'開口控除（窓・ドア面積）',unit:'m²',ph:'例: 5.0（なければ 0）'},
+      {id:'coats',label:'塗り回数',unit:'',def:'2',type:'select',options:[{v:'1',l:'1回塗り'},{v:'2',l:'2回塗り'},{v:'3',l:'3回塗り'}]},
+    ],
+    calc(f){ return [{label:'塗装面積',val:(f.len*f.ht-f.openings)*Number(f.coats),unit:'m²'}] },
+    priceCalc(r,p){ return Math.round(r[0].val*p.painting) },
+  },
+  { id:'tile', label:'タイル', icon:'🟫', cat:'cat-tile', unit:'m²',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 8.0'},
+      {id:'wid',label:'幅（W）',unit:'m',ph:'例: 4.0'},
+      {id:'openings',label:'開口控除（引き算する面積）',unit:'m²',ph:'例: 2.0（なければ 0）'},
+      {id:'waste',label:'ロス率（カット分）',unit:'%',ph:'例: 7（通常7〜10%）'},
+    ],
+    calc(f){ return [{label:'貼付面積',val:(f.len*f.wid-f.openings)*(1+f.waste/100),unit:'m²'}] },
+    priceCalc(r,p){ return Math.round(r[0].val*p.tile) },
+  },
+  { id:'waterproof', label:'防水', icon:'💧', cat:'cat-waterproof', unit:'m²',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 15.0'},
+      {id:'wid',label:'幅（W）',unit:'m',ph:'例: 10.0'},
+      {id:'rise',label:'立上り面積（壁の根本部分）',unit:'m²',ph:'例: 8.0（なければ 0）'},
+    ],
+    calc(f){ return [{label:'防水面積',val:f.len*f.wid+f.rise,unit:'m²'}] },
+    priceCalc(r,p){ return Math.round(r[0].val*p.waterproof) },
+  },
+  { id:'interior', label:'内装', icon:'🏠', cat:'cat-interior', unit:'m²',
+    fields:[
+      {id:'len',label:'長さ（L）',unit:'m',ph:'例: 6.0'},
+      {id:'wid',label:'幅（W）',unit:'m',ph:'例: 4.0'},
+      {id:'part',label:'部位',unit:'',def:'floor',type:'select',options:[{v:'floor',l:'床'},{v:'ceil',l:'天井'},{v:'wall',l:'壁（周長×高さ）'}]},
+      {id:'ht',label:'高さ（壁を選んだときのみ）',unit:'m',ph:'例: 2.5'},
+    ],
+    calc(f){
+      const area=f.part==='wall'?(f.len+f.wid)*2*f.ht:f.len*f.wid
+      return [{label:'施工面積',val:area,unit:'m²'}]
+    },
+    priceCalc(r,p){ return Math.round(r[0].val*p.interior) },
+  },
+]
+
+const DEFAULT_PRICES={concrete:25000,formwork:7000,rebar:140000,earth:3500,painting:2800,tile:9000,waterproof:6500,interior:4500}
+const PRICE_LABELS={concrete:'コンクリート（円/m³）',formwork:'型枠（円/m²）',rebar:'鉄筋（円/t）',earth:'土工事・ほぐし（円/m³）',painting:'塗装（円/m²）',tile:'タイル（円/m²）',waterproof:'防水（円/m²）',interior:'内装（円/m²）'}
+
+let prices={...DEFAULT_PRICES}, items=[], cfg={company:'',person:'',tel:'',tax:'10'}
+let currentTypeId='concrete'
+const T=()=>TYPES.find(t=>t.id===currentTypeId)
+
+function init(){
+  try{const s=localStorage.getItem('qty_prices');if(s)prices={...DEFAULT_PRICES,...JSON.parse(s)}}catch(e){}
+  try{const s=localStorage.getItem('qty_items');if(s)items=JSON.parse(s)}catch(e){}
+  try{const s=localStorage.getItem('qty_cfg');if(s)cfg={...cfg,...JSON.parse(s)}}catch(e){}
+  renderTypeGrid(); selectType('concrete')
+  renderPriceForm(); renderItems(); loadSettingsUI()
+}
+
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('on',['calc','guide','settings'][i]===id))
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('on',p.id==='pane-'+id))
+}
+
+function renderTypeGrid(){
+  document.getElementById('typeGrid').innerHTML=TYPES.map(t=>`
+    <div class="type-btn${t.id===currentTypeId?' on':''}" onclick="selectType('${t.id}')">
+      <span class="type-icon">${t.icon}</span>
+      <span class="type-lbl">${t.label}</span>
+    </div>`).join('')
+}
+
+function selectType(id){
+  currentTypeId=id; renderTypeGrid(); renderInputForm()
+  document.getElementById('itemName').value=''
+  document.getElementById('resultBox').style.display='none'
+}
+
+function renderInputForm(){
+  const t=T()
+  document.getElementById('inputTitle').textContent=t.label+'  —  寸法を入力する'
+  document.getElementById('inputHint').textContent='計算単位: '+t.unit
+  document.getElementById('inputForm').innerHTML=`<div class="form-2col">${t.fields.map(f=>`
+    <div class="field">
+      <label>${f.label}${f.unit?`　<span style="font-weight:400;color:var(--text3)">(${f.unit})</span>`:''}</label>
+      ${f.type==='select'
+        ?`<select id="f_${f.id}" onchange="calcResult()">${f.options.map(o=>`<option value="${o.v}"${f.def===o.v?' selected':''}>${o.l}</option>`).join('')}</select>`
+        :`<input type="number" id="f_${f.id}" placeholder="${f.ph}" oninput="calcResult()" min="0" step="any">`}
+    </div>`).join('')}</div>`
+}
+
+function getVals(){
+  const v={}
+  T().fields.forEach(f=>{
+    const el=document.getElementById('f_'+f.id)
+    if(el) v[f.id]=f.type==='select'?el.value:(parseFloat(el.value)||0)
+  })
+  return v
+}
+
+function hasInput(){
+  return T().fields.some(f=>f.type!=='select'&&(parseFloat(document.getElementById('f_'+f.id)?.value)||0)>0)
+}
+
+function calcResult(){
+  if(!hasInput()){document.getElementById('resultBox').style.display='none';return}
+  const t=T(), f=getVals(), results=t.calc(f), cost=t.priceCalc(results,prices)
+  const cols=Math.min(results.length,3)
+  const box=document.getElementById('resultBox')
+  box.style.gridTemplateColumns=`repeat(${cols},1fr)`
+  box.innerHTML=results.map(r=>`
+    <div class="res-item">
+      <div class="res-lbl">${r.label}</div>
+      <div class="res-val">${fmt(r.val,r.unit)}</div>
+      <div class="res-unit">${r.unit}</div>
+    </div>`).join('')+
+    `<div class="res-cost"><div class="res-cost-lbl">概算金額（単価×数量）</div><div class="res-cost-val">${cost.toLocaleString()} 円</div></div>`
+  box.style.display='grid'
+}
+
+function fmt(v,unit){
+  if(unit==='t')return v.toFixed(3)
+  if(unit==='m³'||unit==='m²')return v.toFixed(2)
+  return Math.round(v).toLocaleString()
+}
+
+function addItem(){
+  if(!hasInput()){alert('寸法を入力してください');return}
+  const t=T(),f=getVals(),results=t.calc(f),cost=t.priceCalc(results,prices)
+  const name=document.getElementById('itemName').value.trim()||`${t.label}（${new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}）`
+  items.push({id:Date.now(),name,cat:t.id,catLabel:t.label,catClass:t.cat,qty:results.map(r=>`${r.label}: ${fmt(r.val,r.unit)} ${r.unit}`).join(' / '),cost,icon:t.icon})
+  saveItems(); renderItems()
+  document.getElementById('itemName').value=''
+  document.getElementById('resultBox').style.display='none'
+  T().fields.forEach(fi=>{const el=document.getElementById('f_'+fi.id);if(el&&fi.type!=='select')el.value=''})
+}
+
+function renderItems(){
+  const list=document.getElementById('itemList')
+  if(!items.length){
+    list.innerHTML='<div class="empty">工種を選んで寸法を入力し<br>「③ 追加」ボタンを押すと<br>ここに表示されます</div>'
+    renderTotals();return
+  }
+  list.innerHTML='<div class="item-list">'+items.map(item=>`
+    <div class="item-row">
+      <div class="item-body">
+        <div class="item-name">${item.icon} ${item.name}</div>
+        <div class="item-meta">
+          <span class="item-cat ${item.catClass}">${item.catLabel}</span>
+          <span class="item-qty">${item.qty}</span>
+        </div>
+      </div>
+      <div class="item-right">
+        <span class="item-price">${item.cost.toLocaleString()}円</span>
+        <button class="item-del" onclick="removeItem(${item.id})">削除</button>
+      </div>
+    </div>`).join('')+'</div>'
+  renderTotals()
+}
+
+function removeItem(id){items=items.filter(x=>x.id!==id);saveItems();renderItems()}
+function clearAll(){if(!items.length||confirm('追加した項目をすべて削除しますか？')){items=[];saveItems();renderItems()}}
+
+function renderTotals(){
+  const rate=parseFloat(cfg.tax||'10')/100
+  const total=items.reduce((s,x)=>s+x.cost,0)
+  const tax=Math.round(total*rate)
+  const byCat={}
+  items.forEach(x=>{byCat[x.catLabel]=(byCat[x.catLabel]||0)+x.cost})
+  let rows=''
+  if(items.length){
+    Object.entries(byCat).forEach(([k,v])=>{rows+=`<div class="total-row"><span class="total-label">${k}</span><span class="total-val">${v.toLocaleString()}円</span></div>`})
+    rows+=`<div class="total-row"><span class="total-label">小計</span><span class="total-val">${total.toLocaleString()}円</span></div>`
+    rows+=`<div class="total-row"><span class="total-label">消費税（${cfg.tax||10}%）</span><span class="total-val">${tax.toLocaleString()}円</span></div>`
+    rows+=`<div class="total-grand"><span class="total-grand-lbl">合計（税込）</span><span class="total-grand-val">${(total+tax).toLocaleString()}円</span></div>`
+  } else {
+    rows='<div style="color:rgba(255,255,255,.4);font-size:12px;text-align:center;padding:6px 0">項目を追加すると表示されます</div>'
+  }
+  document.getElementById('totalRows').innerHTML=rows
+  const pc=document.getElementById('printCompany')
+  if(cfg.company) pc.innerHTML=`${cfg.company}${cfg.person?' &nbsp;担当: '+cfg.person:''}${cfg.tel?' &nbsp;TEL: '+cfg.tel:''}`
+}
+
+function renderPriceForm(){
+  document.getElementById('priceForm').innerHTML=Object.entries(prices).map(([k,v])=>`
+    <div class="field">
+      <label>${PRICE_LABELS[k]}</label>
+      <input type="number" value="${v}" oninput="updatePrice('${k}',this.value)" min="0" step="100">
+    </div>`).join('')
+}
+
+function updatePrice(k,v){prices[k]=parseInt(v)||0;localStorage.setItem('qty_prices',JSON.stringify(prices))}
+function resetPrices(){if(!confirm('単価を初期値に戻しますか？'))return;prices={...DEFAULT_PRICES};localStorage.removeItem('qty_prices');renderPriceForm()}
+
+function saveSetting(key,val){cfg[key]=val;localStorage.setItem('qty_cfg',JSON.stringify(cfg));renderTotals()}
+
+function loadSettingsUI(){
+  const f=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val}
+  f('s-company',cfg.company||'');f('s-person',cfg.person||'');f('s-tel',cfg.tel||'')
+  const taxEl=document.getElementById('s-tax')
+  if(taxEl){taxEl.value=cfg.tax||'10';taxEl.onchange=function(){saveSetting('tax',this.value)}}
+}
+
+function saveItems(){localStorage.setItem('qty_items',JSON.stringify(items))}
+
+function copyText(){
+  if(!items.length){alert('項目がありません');return}
+  const rate=parseFloat(cfg.tax||'10')/100
+  const total=items.reduce((s,x)=>s+x.cost,0),tax=Math.round(total*rate)
+  const lines=['■ 工事数量 見積り内訳',cfg.company||'','']
+  items.forEach((x,i)=>lines.push(`${i+1}. ${x.name}\n   ${x.qty}\n   金額: ${x.cost.toLocaleString()}円`))
+  lines.push('','──────────────────────',`小計：${total.toLocaleString()}円`,`消費税（${cfg.tax||10}%）：${tax.toLocaleString()}円`,`合計：${(total+tax).toLocaleString()}円`)
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>alert('クリップボードにコピーしました')).catch(()=>alert('コピーできませんでした'))
+}
+
+function exportData(){
+  if(!items.length){alert('項目がありません');return}
+  const a=document.createElement('a')
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify({exported:new Date().toISOString(),company:cfg.company,items},null,2))
+  a.download='工事数量計算機_'+new Date().toLocaleDateString('ja-JP').replace(/\//g,'-')+'.json'
+  a.click()
+}
+
+function deleteAll(){
+  if(!confirm('すべてのデータ（内訳・単価・会社情報）を削除します。\nこの操作は取り消せません。本当に削除しますか？'))return
+  ['qty_items','qty_prices','qty_cfg'].forEach(k=>localStorage.removeItem(k))
+  items=[];prices={...DEFAULT_PRICES};cfg={company:'',person:'',tel:'',tax:'10'}
+  renderPriceForm();loadSettingsUI();renderItems();alert('削除しました')
+}
+
+init()
+</script>
+</body>
+</html>
